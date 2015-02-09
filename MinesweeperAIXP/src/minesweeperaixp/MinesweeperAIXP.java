@@ -27,7 +27,7 @@ public class MinesweeperAIXP {
     static BufferedImage image;     //Image Object
 
     static int rootX, rootY, homeX, homeY;
-    static int gray128 = 128, gray192 = 192, blue255 = 255, blue128 = 128, green128 = 128, red255 = 255, red128 = 128;
+    static int gray128 = 128, gray192 = 192, blue255 = 255, blue128 = 128, green128 = 128, red255 = 255, red128 = 128, black0 = 0;
 
     public static void main(String[] args) throws Throwable {
         mouse = new Mouse();    //Initializing Mouse object
@@ -66,8 +66,8 @@ public class MinesweeperAIXP {
         System.out.println("\nSearching for squares\n");
         pause(1.5);
 
-        for (int y = 0; y < ScreenHeight - heightCrop; y++) {   //Repeats for each y pixel
-            for (int x = 0; x < ScreenWidth - widthCrop; x++) { //Repeats for each x pixel
+        for (int y = 0; y < 300; y++) {   //Repeats for each y pixel
+            for (int x = 0; x < 200; x++) { //Repeats for each x pixel
                 int color = image.getRGB(x, y);
                 int blue = color & 0xFF;          // mask first 8 bits
                 int green = (color >> 8) & 0xFF;  // shift right by 8 bits, then mask first 8 bits
@@ -200,9 +200,13 @@ public class MinesweeperAIXP {
         if (boxes[r][c].getStatus() == -1) {
             moveToBox(r, c);
             mouse.leftClick();
-            analyze(false);
-            if (isLonely(boxes[r][c])) {
-                guess();
+            if (!bombCheck(boxes[r][c])) {
+                analyze(false);
+                if (isLonely(boxes[r][c])) {
+                    guess();
+                }
+            } else {
+                System.out.println("Game Over");
             }
         } else {
             System.out.print(" but has already been checked");
@@ -210,28 +214,17 @@ public class MinesweeperAIXP {
         }
     }
 
+    public static boolean bombCheck(Box box) {
+        image = takeScreenShot();
+        int color = image.getRGB(box.getX(), box.getY());
+        int blue = color & 0xFF;          // mask first 8 bits
+        int green = (color >> 8) & 0xFF;  // shift right by 8 bits, then mask first 8 bits
+        int red = (color >> 16) & 0xFF;   // shift right by 16 bits, then mask first 8 bits
+        return isSameColor(red, green, blue, black0, black0, black0, 0);
+    }
+
     public static boolean isLonely(Box box) {
-//        if (box.getNorthEast() == 10 && box.getSouthWest() == -1) {
-//            return true;
-//        } else if (box.getNorthWest() == 10 && box.getSouthEast() == -1) {
-//            return true;
-//        } else if (box.getSouthEast() == 10 && box.getNorthWest() == -1) {
-//            return true;
-//        } else if (box.getSouthWest() == 10 && box.getNorthEast() == -1) {
-//            return true;
-//        } else if (box.getNorth() == 10 && box.getSouth() == -1) {
-//            return true;
-//        } else if (box.getSouth() == 10 && box.getNorth() == -1) {
-//            return true;
-//        }else if (box.getEast() == 10 && box.getWest() == -1) {
-//            return true;
-//        }else if (box.getWest() == 10 && box.getEast() == -1) {
-//            return true;
-        if (box.getNorth() == -1 || box.getSouth() == -1 || box.getEast() == -1 || box.getWest() == -1) {
-            return true;
-        } else {
-            return false;
-        }
+        return box.getNorth() == -1 || box.getSouth() == -1 || box.getEast() == -1 || box.getWest() == -1;
     }
 
     public static void analyze(boolean re) {
