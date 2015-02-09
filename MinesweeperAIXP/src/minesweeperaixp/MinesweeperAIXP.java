@@ -200,8 +200,10 @@ public class MinesweeperAIXP {
         if (boxes[r][c].getStatus() == -1) {
             moveToBox(r, c);
             mouse.leftClick();
-        } else if (isLonely(boxes[r][c])) {
-            guess();
+            analyze(false);
+            if (isLonely(boxes[r][c])) {
+                guess();
+            }
         } else {
             System.out.print(" but has already been checked");
             guess();
@@ -209,13 +211,23 @@ public class MinesweeperAIXP {
     }
 
     public static boolean isLonely(Box box) {
-        if (box.getNorthEast() == 10 && box.getSouthWest() == -1) {
-            return true;
-        } else if (box.getNorthWest() == 10 && box.getSouthEast() == -1) {
-            return true;
-        } else if (box.getSouthEast() == 10 && box.getNorthWest() == -1) {
-            return true;
-        } else if (box.getSouthWest() == 10 && box.getNorthEast() == -1) {
+//        if (box.getNorthEast() == 10 && box.getSouthWest() == -1) {
+//            return true;
+//        } else if (box.getNorthWest() == 10 && box.getSouthEast() == -1) {
+//            return true;
+//        } else if (box.getSouthEast() == 10 && box.getNorthWest() == -1) {
+//            return true;
+//        } else if (box.getSouthWest() == 10 && box.getNorthEast() == -1) {
+//            return true;
+//        } else if (box.getNorth() == 10 && box.getSouth() == -1) {
+//            return true;
+//        } else if (box.getSouth() == 10 && box.getNorth() == -1) {
+//            return true;
+//        }else if (box.getEast() == 10 && box.getWest() == -1) {
+//            return true;
+//        }else if (box.getWest() == 10 && box.getEast() == -1) {
+//            return true;
+        if (box.getNorth() == -1 || box.getSouth() == -1 || box.getEast() == -1 || box.getWest() == -1) {
             return true;
         } else {
             return false;
