@@ -258,7 +258,12 @@ public class MinesweeperAIXP {
                 if (x >= 1) {
                     boxes[x][y].setWest(boxes[x - 1][y].getStatus());
                 }
-                System.out.println("Box " + boxes[x][y].getNum() + ": North-" + boxes[x][y].getNorth() + " South-" + boxes[x][y].getSouth() + " East-" + boxes[x][y].getEast() + " West-" + boxes[x][y].getWest());
+                if (x <= rowsX - 2 && y >= 1) {
+                    boxes[x][y].setNorthEast(boxes[x + 1][y - 1].getStatus());
+                }
+                System.out.println("Box " + boxes[x][y].getNum() + ": North-" + boxes[x][y].getNorth()
+                        + " South-" + boxes[x][y].getSouth() + " East-" + boxes[x][y].getEast()
+                        + " West-" + boxes[x][y].getWest() + " NorthEast-" + boxes[x][y].getNorthEast());
             }
         }
     }
