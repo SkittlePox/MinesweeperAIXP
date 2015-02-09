@@ -200,9 +200,25 @@ public class MinesweeperAIXP {
         if (boxes[r][c].getStatus() == -1) {
             moveToBox(r, c);
             mouse.leftClick();
+        } else if (isLonely(boxes[r][c])) {
+            guess();
         } else {
             System.out.print(" but has already been checked");
             guess();
+        }
+    }
+
+    public static boolean isLonely(Box box) {
+        if (box.getNorthEast() == 10 && box.getSouthWest() == -1) {
+            return true;
+        } else if (box.getNorthWest() == 10 && box.getSouthEast() == -1) {
+            return true;
+        } else if (box.getSouthEast() == 10 && box.getNorthWest() == -1) {
+            return true;
+        } else if (box.getSouthWest() == 10 && box.getNorthEast() == -1) {
+            return true;
+        } else {
+            return false;
         }
     }
 
