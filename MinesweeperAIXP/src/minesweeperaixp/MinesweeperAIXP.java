@@ -19,6 +19,7 @@ public class MinesweeperAIXP {
 
     static int rowsX = 9, columnsY = 9;
     static Box[][] boxes = new Box[rowsX][columnsY];        //Creates a 2D array of boxes with the given dimensions
+    static AI ai;   //Creates AI object
 
     static int ScreenWidth, ScreenHeight;   //Screen DImensions
     static int widthCrop, heightCrop; //Number of Pixels to crop out of the search scope
@@ -30,6 +31,7 @@ public class MinesweeperAIXP {
     static int gray128 = 128, gray192 = 192, blue255 = 255, blue128 = 128, green128 = 128, red255 = 255, red128 = 128, black0 = 0;
 
     public static void main(String[] args) throws Throwable {
+        ai = new AI();  //Initializes AI object
         mouse = new Mouse();    //Initializing Mouse object
 
         callibrateScreenSize(); //Callibrates screen size
@@ -191,13 +193,13 @@ public class MinesweeperAIXP {
         }
     }
 
-    public static void guess() {
+    public static void guess() {    //Guesses a box
         System.out.println("\nGuessing");
         pause(2);
         int r = rand.nextInt(rowsX);    //Gets random x
         int c = rand.nextInt(columnsY); //Gets random y
         System.out.println(r + " " + c + " Was guessed");
-        if (boxes[r][c].getStatus() == -1) {
+        if (boxes[r][c].getStatus() == -1) {    //If the box is unchecked
             moveToBox(r, c);
             mouse.leftClick();
             if (!bombCheck(boxes[r][c])) {
@@ -214,7 +216,7 @@ public class MinesweeperAIXP {
         }
     }
 
-    public static boolean bombCheck(Box box) {
+    public static boolean bombCheck(Box box) {  //Checks if you hit a bomb
         image = takeScreenShot();
         int color = image.getRGB(box.getX(), box.getY());
         int blue = color & 0xFF;          // mask first 8 bits
@@ -223,7 +225,7 @@ public class MinesweeperAIXP {
         return isSameColor(red, green, blue, black0, black0, black0, 0);
     }
 
-    public static boolean isLonely(Box box) {
+    public static boolean isLonely(Box box) {   //Tests if box has bordering uchecked boxes
         return box.getNorth() == -1 || box.getSouth() == -1 || box.getEast() == -1 || box.getWest() == -1;
     }
 
