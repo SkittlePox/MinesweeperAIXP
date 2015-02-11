@@ -5,7 +5,7 @@ import static minesweeperaixp.MinesweeperAIXP.rowsX;
 
 public class Box {
 
-    private int x, y, number, status, n = 10, s = 10, e = 10, w = 10, ne = 10, nw = 10, se = 10, sw = 10;
+    private int x, y, number, status, n = 10, s = 10, e = 10, w = 10, ne = 10, nw = 10, se = 10, sw = 10, chance = 0;
     private boolean checked;
     /*
      For status:
@@ -20,7 +20,8 @@ public class Box {
      7 is seven mines nearby
      8 is eight mines nearby
      9 is a mine that is flagged
-     10 is a mine that does not exist
+    
+     10 is a mine that is uninitialized (Only for surrounding boxes)
      */
 
     public Box(int xx, int yy, int num, int stat) {
@@ -62,6 +63,14 @@ public class Box {
         sw = southwest;
     }
 
+    public void setChance(int c) {
+        chance = c;
+    }
+
+    public void addChance(int c) {
+        chance += c;
+    }
+
     public int getNorth() {
         return n;
     }
@@ -77,21 +86,25 @@ public class Box {
     public int getWest() {
         return w;
     }
-    
+
     public int getNorthEast() {
         return ne;
     }
-    
+
     public int getNorthWest() {
         return nw;
     }
-    
+
     public int getSouthEast() {
         return se;
     }
-    
+
     public int getSouthWest() {
         return sw;
+    }
+
+    public int getChance() {
+        return chance;
     }
 
     public int getX() {

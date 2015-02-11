@@ -252,17 +252,23 @@ public class MinesweeperAIXP {
                         red = (color >> 16) & 0xFF;   // shift right by 16 bits, then mask first 8 bits
                         if (isSameColor(red, green, blue, gray128, gray128, gray128, 0)) {
                             boxes[x][y].setStatus(0);
+                            boxes[x][y].setChance(0);
                         }
                     } else if (isSameColor(red, green, blue, 0, 0, blue255, 0)) {   //Tests for blue255
                         boxes[x][y].setStatus(1);
+                        boxes[x][y].setChance(0);
                     } else if (isSameColor(red, green, blue, 0, green128, 0, 0)) {  //Tests for green128
                         boxes[x][y].setStatus(2);
+                        boxes[x][y].setChance(0);
                     } else if (isSameColor(red, green, blue, red255, 0, 0, 0)) {  //Tests for green128
                         boxes[x][y].setStatus(3);
+                        boxes[x][y].setChance(0);
                     } else if (isSameColor(red, green, blue, 0, 0, blue128, 0)) {  //Tests for blue128
                         boxes[x][y].setStatus(4);
+                        boxes[x][y].setChance(0);
                     } else if (isSameColor(red, green, blue, red128, 0, 0, 0)) {  //Tests for red128
                         boxes[x][y].setStatus(5);
+                        boxes[x][y].setChance(0);
                     }
                 }
             }
