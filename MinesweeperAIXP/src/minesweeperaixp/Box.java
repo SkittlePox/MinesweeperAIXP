@@ -5,7 +5,11 @@ import static minesweeperaixp.MinesweeperAIXP.rowsX;
 
 public class Box {
 
-    private int x, y, number, status, n = 10, s = 10, e = 10, w = 10, ne = 10, nw = 10, se = 10, sw = 10, chance = 0;
+    private int x, y, number, status = -1, n = 10, s = 10, e = 10, w = 10, ne = 10, nw = 10, se = 10, sw = 10;
+    double chance = 0;
+    double unaccountedBoxes = status;
+    double surroundingBoxes = surroundingBoxCheck();
+    double chancePerBox = (unaccountedBoxes / surroundingBoxes) * 100;
     private boolean checked;
     /*
      For status:
@@ -29,6 +33,63 @@ public class Box {
         y = yy;
         number = num;
         status = stat;
+    }
+
+    public int surroundingBoxCheck() {  //Checks the surrounding aread for boxes
+        int a = 0;
+        if (nw == -1) {
+            a++;
+        }
+        if (n == -1) {
+            a++;
+        }
+        if (ne == -1) {
+            a++;
+        }
+        if (w == -1) {
+            a++;
+        }
+        if (e == -1) {
+            a++;
+        }
+        if (sw == -1) {
+            a++;
+        }
+        if (s == -1) {
+            a++;
+        }
+        if (se == -1) {
+            a++;
+        }
+        return a;
+    }
+    
+    public void flagcheck() {
+        unaccountedBoxes = status;
+        if (nw == 9) {
+            unaccountedBoxes--;
+        }
+        if (n == 9) {
+            unaccountedBoxes--;
+        }
+        if (ne == 9) {
+            unaccountedBoxes--;
+        }
+        if (w == 9) {
+            unaccountedBoxes--;
+        }
+        if (e == 9) {
+            unaccountedBoxes--;
+        }
+        if (sw == 9) {
+            unaccountedBoxes--;
+        }
+        if (s == 9) {
+            unaccountedBoxes--;
+        }
+        if (se == 9) {
+            unaccountedBoxes--;
+        }
     }
 
     public void setNorth(int north) {
@@ -103,8 +164,8 @@ public class Box {
         return sw;
     }
 
-    public int getChance() {
-        return chance;
+    public double getChancePerBox() {
+        return chancePerBox;
     }
 
     public int getX() {

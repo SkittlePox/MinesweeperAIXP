@@ -28,7 +28,7 @@ public class MinesweeperAIXP {
     static BufferedImage image;     //Image Object
 
     static int rootX, rootY, homeX, homeY;
-    static int gray128 = 128, gray192 = 192, blue255 = 255, blue128 = 128, green128 = 128, red255 = 255, red128 = 128, black0 = 0;
+    static int gray128 = 128, gray192 = 192, blue255 = 255, blue128 = 128, green128 = 128, red255 = 255, red128 = 128, black0 = 0, tq128 = 128;
 
     public static void main(String[] args) throws Throwable {
         ai = new AI();  //Initializes AI object
@@ -244,7 +244,7 @@ public class MinesweeperAIXP {
 
                     System.out.println("Testing Box " + boxes[x][y].getNum() + " at " + boxes[x][y].getX() + " " + boxes[x][y].getY() + " with colors " + red + " " + green + " " + blue);
 
-                    if (isSameColor(red, green, blue, gray192, gray192, gray192, 0)) {  //Tests for gray192
+                    if (isSameColor(red, green, blue, gray192, gray192, gray192, 0)) {  //Tests for gray192 which is shared with an empty box, and unchecked box, and a flagged box
                         System.out.println("Testing for 0");
                         color = image.getRGB(boxes[x][y].getX() - 9, boxes[x][y].getY());
                         blue = color & 0xFF;          // mask first 8 bits
@@ -253,6 +253,17 @@ public class MinesweeperAIXP {
                         if (isSameColor(red, green, blue, gray128, gray128, gray128, 0)) {
                             boxes[x][y].setStatus(0);
                             boxes[x][y].setChance(0);
+                            //Test for seven
+                        }
+                        else {
+                            color = image.getRGB(boxes[x][y].getX()-1, boxes[x][y].getY()-1);
+                            blue = color & 0xFF;          // mask first 8 bits
+                            green = (color >> 8) & 0xFF;  // shift right by 8 bits, then mask first 8 bits
+                            red = (color >> 16) & 0xFF;   // shift right by 16 bits, then mask first 8 bits
+                            if(isSameColor(red, green, blue, red255, 0, 0, 0)) {
+                            boxes[x][y].setStatus(9);
+                        }
+                            
                         }
                     } else if (isSameColor(red, green, blue, 0, 0, blue255, 0)) {   //Tests for blue255
                         boxes[x][y].setStatus(1);
@@ -268,6 +279,12 @@ public class MinesweeperAIXP {
                         boxes[x][y].setChance(0);
                     } else if (isSameColor(red, green, blue, red128, 0, 0, 0)) {  //Tests for red128
                         boxes[x][y].setStatus(5);
+                        boxes[x][y].setChance(0);
+                    } else if (isSameColor(red, green, blue, 0, tq128, tq128, 0)) {  //Tests for red128
+                        boxes[x][y].setStatus(6);
+                        boxes[x][y].setChance(0);
+                    } else if (isSameColor(red, green, blue, gray128, gray128, gray128, 0)) {  //Tests for red128
+                        boxes[x][y].setStatus(8);
                         boxes[x][y].setChance(0);
                     }
                 }
