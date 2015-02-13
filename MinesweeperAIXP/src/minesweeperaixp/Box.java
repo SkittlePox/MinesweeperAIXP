@@ -7,9 +7,9 @@ public class Box {
 
     private int x, y, number, status = -1, n = 10, s = 10, e = 10, w = 10, ne = 10, nw = 10, se = 10, sw = 10;
     double chance = 0;
-    double unaccountedBoxes = status;
-    double surroundingBoxes = surroundingBoxCheck();
-    double chancePerBox = (unaccountedBoxes / surroundingBoxes) * 100;
+    double unaccountedBoxes;
+    double surroundingBoxes;
+    double chancePerBox;
     private boolean checked;
     /*
      For status:
@@ -35,7 +35,7 @@ public class Box {
         status = stat;
     }
 
-    public int surroundingBoxCheck() {  //Checks the surrounding aread for boxes
+    public int surroundingBoxes() {  //Checks the surrounding aread for boxes
         int a = 0;
         if (nw == -1) {
             a++;
@@ -63,32 +63,35 @@ public class Box {
         }
         return a;
     }
-    
+
     public void flagcheck() {
         unaccountedBoxes = status;
-        if (nw == 9) {
+        if (nw >= 9) {
             unaccountedBoxes--;
         }
-        if (n == 9) {
+        if (n >= 9) {
             unaccountedBoxes--;
         }
-        if (ne == 9) {
+        if (ne >= 9) {
             unaccountedBoxes--;
         }
-        if (w == 9) {
+        if (w >= 9) {
             unaccountedBoxes--;
         }
-        if (e == 9) {
+        if (e >= 9) {
             unaccountedBoxes--;
         }
-        if (sw == 9) {
+        if (sw >= 9) {
             unaccountedBoxes--;
         }
-        if (s == 9) {
+        if (s >= 9) {
             unaccountedBoxes--;
         }
-        if (se == 9) {
+        if (se >= 9) {
             unaccountedBoxes--;
+        }
+        if (unaccountedBoxes < 0) {
+            unaccountedBoxes = 0;
         }
     }
 
@@ -132,6 +135,10 @@ public class Box {
         chance += c;
     }
 
+    public double getChance() {
+        return chance;
+    }
+
     public int getNorth() {
         return n;
     }
@@ -165,7 +172,18 @@ public class Box {
     }
 
     public double getChancePerBox() {
-        return chancePerBox;
+        flagcheck();
+        surroundingBoxes = surroundingBoxes();
+        chancePerBox = (unaccountedBoxes / surroundingBoxes) * 100;
+        if (unaccountedBoxes == 0) {
+            return 0;
+        } else {
+            return chancePerBox;
+        }
+    }
+
+    public void setChancePerBox(double c) {
+        chancePerBox = c;
     }
 
     public int getX() {

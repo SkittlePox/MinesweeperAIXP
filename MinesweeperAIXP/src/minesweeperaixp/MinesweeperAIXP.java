@@ -28,7 +28,7 @@ public class MinesweeperAIXP {
     static BufferedImage image;     //Image Object
 
     static int rootX, rootY, homeX, homeY;
-    static int gray128 = 128, gray192 = 192, blue255 = 255, blue128 = 128, green128 = 128, red255 = 255, red128 = 128, black0 = 0, tq128 = 128;
+    static int gray128 = 128, gray192 = 192, blue255 = 255, blue128 = 128, green128 = 128, red255 = 255, red128 = 128, black0 = 0, tq128 = 128, white255 = 255;
 
     public static void main(String[] args) throws Throwable {
         ai = new AI();  //Initializes AI object
@@ -110,6 +110,7 @@ public class MinesweeperAIXP {
                 }
                 mapY += 16;   //Goes to the next row down
             }
+            pause(.5);
             goHome();
             System.out.println("\nMinesweeper found");
         } else {
@@ -171,6 +172,24 @@ public class MinesweeperAIXP {
 
     public static void printStatus() {
         System.out.println();
+        for (int d = 0; d < rowsX; d++) {
+            for (int c = 0; c < columnsY; c++) {
+                if (boxes[c][d].getStatus() != -1 && boxes[c][d].getStatus() != 0 && boxes[c][d].getStatus() != 9) {
+                    System.out.println("Box " + boxes[c][d].getNum() + " gives a chance to other boxes of " + boxes[c][d].getChancePerBox());
+                } else if (boxes[c][d].getStatus() == 0) {
+                    System.out.println("Box " + boxes[c][d].getNum() + " has a status of 0 and has 0 chance and 0 chance to give");
+                    boxes[c][d].setChancePerBox(0);
+                    boxes[c][d].setChance(0);
+                } else if (boxes[c][d].getStatus() == 9) {
+                    boxes[c][d].setChancePerBox(0);
+                    System.out.println("Box " + boxes[c][d].getNum() + " is unchecked and has a chance of " + boxes[c][d].getChance());
+                } else if (boxes[c][d].getStatus() == -1) {
+                    boxes[c][d].setChancePerBox(0);
+                    System.out.println("Box " + boxes[c][d].getNum() + " is unchecked and has a chance of " + boxes[c][d].getChance());
+                }
+            }
+        }
+        System.out.println();
         for (int d = 0; d < rowsX + 1; d++) {
             System.out.print("---");
         }
@@ -180,6 +199,8 @@ public class MinesweeperAIXP {
             for (int g = 0; g < rowsX; g++) {
                 if (boxes[g][c].getStatus() == -1) {
                     System.out.print("[ ]");
+                } else if (boxes[g][c].getStatus() == 9) {
+                    System.out.print("[F]");
                 } else if (boxes[g][c].getStatus() == 0) {
                     System.out.print("   ");
                 } else {
@@ -191,6 +212,7 @@ public class MinesweeperAIXP {
         for (int d = 0; d < rowsX + 1; d++) {
             System.out.print("---");
         }
+
     }
 
     public static void guess() {    //Guesses a box
@@ -222,7 +244,20 @@ public class MinesweeperAIXP {
         int blue = color & 0xFF;          // mask first 8 bits
         int green = (color >> 8) & 0xFF;  // shift right by 8 bits, then mask first 8 bits
         int red = (color >> 16) & 0xFF;   // shift right by 16 bits, then mask first 8 bits
-        return isSameColor(red, green, blue, black0, black0, black0, 0);
+        if (isSameColor(red, green, blue, black0, black0, black0, 0)) {
+            image = takeScreenShot();
+            color = image.getRGB(box.getX() - 2, box.getY() - 1);
+            blue = color & 0xFF;          // mask first 8 bits
+            green = (color >> 8) & 0xFF;  // shift right by 8 bits, then mask first 8 bits
+            red = (color >> 16) & 0xFF;   // shift right by 16 bits, then mask first 8 bits
+            if (isSameColor(red, green, blue, white255, white255, white255, 0)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public static boolean isLonely(Box box) {   //Tests if box has bordering uchecked boxes
@@ -254,16 +289,14 @@ public class MinesweeperAIXP {
                             boxes[x][y].setStatus(0);
                             boxes[x][y].setChance(0);
                             //Test for seven
-                        }
-                        else {
-                            color = image.getRGB(boxes[x][y].getX()-1, boxes[x][y].getY()-1);
+                        } else {
+                            color = image.getRGB(boxes[x][y].getX() - 1, boxes[x][y].getY() - 1);
                             blue = color & 0xFF;          // mask first 8 bits
                             green = (color >> 8) & 0xFF;  // shift right by 8 bits, then mask first 8 bits
                             red = (color >> 16) & 0xFF;   // shift right by 16 bits, then mask first 8 bits
-                            if(isSameColor(red, green, blue, red255, 0, 0, 0)) {
-                            boxes[x][y].setStatus(9);
-                        }
-                            
+                            if (isSameColor(red, green, blue, red255, 0, 0, 0)) {
+                                boxes[x][y].setStatus(9);
+                            }
                         }
                     } else if (isSameColor(red, green, blue, 0, 0, blue255, 0)) {   //Tests for blue255
                         boxes[x][y].setStatus(1);
@@ -283,6 +316,17 @@ public class MinesweeperAIXP {
                     } else if (isSameColor(red, green, blue, 0, tq128, tq128, 0)) {  //Tests for red128
                         boxes[x][y].setStatus(6);
                         boxes[x][y].setChance(0);
+                    } else if (isSameColor(red, green, blue, black0, black0, black0, 0)) {  //Tests for tests for black0
+                        color = image.getRGB(boxes[x][y].getX() - 1, boxes[x][y].getY() - 1);
+                        blue = color & 0xFF;          // mask first 8 bits
+                        green = (color >> 8) & 0xFF;  // shift right by 8 bits, then mask first 8 bits
+                        red = (color >> 16) & 0xFF;   // shift right by 16 bits, then mask first 8 bits
+                        if (isSameColor(red, green, blue, gray192, gray192, gray192, 0)) {
+                            boxes[x][y].setStatus(7);
+                            boxes[x][y].setChance(0);
+                        } else {
+                            bombCheck(boxes[x][y]);
+                        }
                     } else if (isSameColor(red, green, blue, gray128, gray128, gray128, 0)) {  //Tests for red128
                         boxes[x][y].setStatus(8);
                         boxes[x][y].setChance(0);
