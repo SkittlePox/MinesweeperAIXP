@@ -17,7 +17,7 @@ public class MinesweeperAIXP {
     static String input;    //Used for scanner inputs
     static boolean prompt = true;   //Used to control whether or not commands can be taken
 
-    static int rowsX = 30, columnsY = 24;
+    static int rowsX = 9, columnsY = 9;
     static Box[][] boxes = new Box[rowsX][columnsY];        //Creates a 2D array of boxes with the given dimensions
     static AI ai;   //Creates AI object
 
