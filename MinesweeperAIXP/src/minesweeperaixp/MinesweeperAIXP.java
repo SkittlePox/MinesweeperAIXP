@@ -17,7 +17,7 @@ public class MinesweeperAIXP {
     static String input;    //Used for scanner inputs
     static boolean prompt = true;   //Used to control whether or not commands can be taken
 
-    static int rowsX = 9, columnsY = 9;
+    static int rowsX = 30, columnsY = 24;
     static Box[][] boxes = new Box[rowsX][columnsY];        //Creates a 2D array of boxes with the given dimensions
     static AI ai;   //Creates AI object
 
@@ -27,7 +27,7 @@ public class MinesweeperAIXP {
     static Mouse mouse;     //Mouse object
     static BufferedImage image;     //Image Object
 
-    static int rootX, rootY, homeX, homeY;
+    static int rootX, rootY, homeX, homeY, winX, winY;
     static int gray128 = 128, gray192 = 192, blue255 = 255, blue128 = 128, green128 = 128, red255 = 255, red128 = 128, black0 = 0, tq128 = 128, white255 = 255;
 
     public static void main(String[] args) throws Throwable {
@@ -48,6 +48,11 @@ public class MinesweeperAIXP {
         pause(1);
         System.out.println("1...");
         pause(1);
+        try {
+            Thread.sleep(4000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         image = takeScreenShot();   //Sets an image a screenshot
 
@@ -59,6 +64,12 @@ public class MinesweeperAIXP {
         printStatus();
         ai.flagMines();
         ai.clearNums();
+        while (!didWeWin()) {
+            analyze(false);
+            ai.flagMines();
+            analyze(false);
+            ai.clearNums();
+        }
         while (prompt) {
             takeCommand();
         }
@@ -85,8 +96,11 @@ public class MinesweeperAIXP {
                     found = true;
                     rootX = x + 12; //Sets actual box location
                     rootY = y + 54; //Sets actual box location
-                    homeX = rootX + 173;
-                    homeY = rootY + 30;
+                    winX = x + 75;
+                    x += (rowsX - 9) * 8;
+                    winY = y + 16;
+                    homeX = rootX + 300;
+                    homeY = rootY + 100;
                     System.out.println("\nRoot square planted at " + rootX + " " + rootY + "\n");
                     pause(1);
                     break;  //Breaks out of first loop
@@ -112,7 +126,6 @@ public class MinesweeperAIXP {
                 }
                 mapY += 16;   //Goes to the next row down
             }
-            pause(.5);
             goHome();
             System.out.println("\nMinesweeper found");
         } else {
@@ -171,8 +184,8 @@ public class MinesweeperAIXP {
 
     public static void printStatus() {
         System.out.println();
-        for (int d = 0; d < rowsX; d++) {
-            for (int c = 0; c < columnsY; c++) {
+        for (int d = 0; d < columnsY; d++) {
+            for (int c = 0; c < rowsX; c++) {
                 if (boxes[c][d].getStatus() != -1 && boxes[c][d].getStatus() != 0 && boxes[c][d].getStatus() != 9) {
                     System.out.println("Box " + boxes[c][d].getNum() + " gives a chance to other boxes of " + boxes[c][d].getChancePerBox());
                 } else if (boxes[c][d].getStatus() == 0) {
@@ -190,8 +203,8 @@ public class MinesweeperAIXP {
         }
         System.out.println();
         System.out.println("Chance Per Box");
-        for (int d = 0; d < rowsX; d++) {
-            for (int c = 0; c < columnsY; c++) {
+        for (int d = 0; d < columnsY; d++) {
+            for (int c = 0; c < rowsX; c++) {
                 if (boxes[c][d].getChancePerBox() >= 100) {
                     int i = (int) boxes[c][d].getChancePerBox();
                     System.out.print("[" + i + "]");
@@ -209,8 +222,8 @@ public class MinesweeperAIXP {
 
         System.out.println();
         System.out.println("Chance");
-        for (int d = 0; d < rowsX; d++) {
-            for (int c = 0; c < columnsY; c++) {
+        for (int d = 0; d < columnsY; d++) {
+            for (int c = 0; c < rowsX; c++) {
                 if (boxes[c][d].getChance() >= 100) {
                     int i = (int) boxes[c][d].getChance();
                     System.out.print("[" + i + "]");
@@ -228,8 +241,8 @@ public class MinesweeperAIXP {
 
         System.out.println();
         System.out.println("Confirmed Mines");
-        for (int d = 0; d < rowsX; d++) {
-            for (int c = 0; c < columnsY; c++) {
+        for (int d = 0; d < columnsY; d++) {
+            for (int c = 0; c < rowsX; c++) {
                 if (boxes[c][d].isAMine()) {
                     System.out.print("[M]");
                 } else {
@@ -238,11 +251,11 @@ public class MinesweeperAIXP {
             }
             System.out.println();
         }
-        
+
         System.out.println();
         System.out.println("Cleared Boxes");
-        for (int d = 0; d < rowsX; d++) {
-            for (int c = 0; c < columnsY; c++) {
+        for (int d = 0; d < columnsY; d++) {
+            for (int c = 0; c < rowsX; c++) {
                 if (boxes[c][d].isClear()) {
                     System.out.print("[C]");
                 } else {
@@ -280,7 +293,7 @@ public class MinesweeperAIXP {
 
     public static void guess() {    //Guesses a box
         System.out.println("\nGuessing");
-        pause(2);
+        pause(.05);
         int r = rand.nextInt(rowsX);    //Gets random x
         int c = rand.nextInt(columnsY); //Gets random y
         System.out.println(r + " " + c + " Was guessed");
@@ -328,7 +341,7 @@ public class MinesweeperAIXP {
     }
 
     public static void analyze(boolean re) {
-        pause(2);
+        pause(.05);
         goHome();
         System.out.println("\nAnalyzing board\n");
         image = takeScreenShot();   //Takes new screenshot
@@ -454,12 +467,21 @@ public class MinesweeperAIXP {
         return null;
     }
 
+    public static boolean didWeWin() {
+        image = takeScreenShot();   //Takes new screenshot
+        int color = image.getRGB(winX, winY);
+        int blue = color & 0xFF;          // mask first 8 bits
+        int green = (color >> 8) & 0xFF;  // shift right by 8 bits, then mask first 8 bits
+        int red = (color >> 16) & 0xFF;   // shift right by 16 bits, then mask first 8 bits
+        return isSameColor(red, green, blue, black0, black0, black0, 0);
+    }
+
     public static boolean isSameColor(int r1, int g1, int b1, int r2, int g2, int b2, int t) {
         return r1 <= r2 + t && r1 >= r2 - t && g1 <= g2 + t && g1 >= g2 - t && b1 <= b2 + t && b1 >= b2 - t;
     }
 
     public static void pause(double seconds) {
-        seconds = seconds * 1000;
+        seconds = seconds * 500;
         long secondsL = (long) seconds;
         try {
             Thread.sleep(secondsL);
