@@ -298,6 +298,7 @@ public class MinesweeperAIXP {
         image = takeScreenShot();   //Takes new screenshot
         for (int y = 0; y < columnsY; y++) {
             for (int x = 0; x < rowsX; x++) {
+                boxes[x][y].flagcheck();
                 if (boxes[x][y].getStatus() == -1 || re) {
                     int color = image.getRGB(boxes[x][y].getX(), boxes[x][y].getY());
                     int blue = color & 0xFF;          // mask first 8 bits
