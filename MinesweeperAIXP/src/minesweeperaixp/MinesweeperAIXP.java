@@ -187,13 +187,13 @@ public class MinesweeperAIXP {
                 if (boxes[c][d].getChancePerBox() >= 100) {
                     int i = (int) boxes[c][d].getChancePerBox();
                     System.out.print("[" + i + "]");
-                }
-                else if (boxes[c][d].getChancePerBox() > 0) {
+                } else if (boxes[c][d].getChancePerBox() > 0) {
                     int i = (int) boxes[c][d].getChancePerBox();
                     System.out.print("[ " + i + "]");
-                } else {
-                    System.out.print("[" + boxes[c][d].getChancePerBox() + "]");
+                } else if(boxes[c][d].getStatus() != -1){
+                    System.out.print("[   ]");
                 }
+                else System.out.print("["+ boxes[c][d].getChancePerBox()+"]");
             }
             System.out.println();
         }
@@ -202,7 +202,16 @@ public class MinesweeperAIXP {
         System.out.println("Chance");
         for (int d = 0; d < rowsX; d++) {
             for (int c = 0; c < columnsY; c++) {
-                System.out.print("[" + boxes[c][d].getChance() + "]");
+                if (boxes[c][d].getChance() >= 100) {
+                    int i = (int) boxes[c][d].getChance();
+                    System.out.print("[" + i + "]");
+                } else if (boxes[c][d].getChance() > 0) {
+                    int i = (int) boxes[c][d].getChance();
+                    System.out.print("[ " + i + "]");
+                } else if(boxes[c][d].getStatus() != -1){
+                    System.out.print("[   ]");
+                }
+                else System.out.print("["+ boxes[c][d].getChance()+"]");
             }
             System.out.println();
         }
@@ -385,6 +394,7 @@ public class MinesweeperAIXP {
                         + " SouthWest-" + boxes[x][y].getSouthWest());
             }
         }
+        ai.numberedBoxCheck();
     }
 
     public static void moveToBox(int x, int y) {

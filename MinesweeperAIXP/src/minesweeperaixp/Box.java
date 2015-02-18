@@ -66,28 +66,28 @@ public class Box {
 
     public void flagcheck() {
         unaccountedBoxes = status;
-        if (nw >= 9) {
+        if (nw == 9) {
             unaccountedBoxes--;
         }
-        if (n >= 9) {
+        if (n == 9) {
             unaccountedBoxes--;
         }
-        if (ne >= 9) {
+        if (ne == 9) {
             unaccountedBoxes--;
         }
-        if (w >= 9) {
+        if (w == 9) {
             unaccountedBoxes--;
         }
-        if (e >= 9) {
+        if (e == 9) {
             unaccountedBoxes--;
         }
-        if (sw >= 9) {
+        if (sw == 9) {
             unaccountedBoxes--;
         }
-        if (s >= 9) {
+        if (s == 9) {
             unaccountedBoxes--;
         }
-        if (se >= 9) {
+        if (se == 9) {
             unaccountedBoxes--;
         }
         if (unaccountedBoxes < 0) {
@@ -127,11 +127,11 @@ public class Box {
         sw = southwest;
     }
 
-    public void setChance(int c) {
+    public void setChance(double c) {
         chance = c;
     }
 
-    public void addChance(int c) {
+    public void addChance(double c) {
         chance += c;
     }
 
