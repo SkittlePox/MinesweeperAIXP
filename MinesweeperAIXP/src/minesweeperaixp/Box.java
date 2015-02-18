@@ -10,7 +10,7 @@ public class Box {
     double unaccountedBoxes;
     double surroundingBoxes;
     double chancePerBox;
-    private boolean checked;
+    private boolean isMine, isAccountedFor = false;
     /*
      For status:
      -1 is unchecked
@@ -35,7 +35,7 @@ public class Box {
         status = stat;
     }
 
-    public int surroundingBoxes() {  //Checks the surrounding aread for boxes
+    public int surroundingBoxes() {  //Checks the surrounding area for boxes
         int a = 0;
         if (nw == -1) {
             a++;
@@ -175,7 +175,7 @@ public class Box {
         flagcheck();
         surroundingBoxes = surroundingBoxes();
         chancePerBox = (unaccountedBoxes / surroundingBoxes) * 100;
-        if (unaccountedBoxes == 0) {
+        if (unaccountedBoxes == 0 || status == 9) {
             return 0;
         } else {
             return chancePerBox;
@@ -206,11 +206,20 @@ public class Box {
         status = stat;
     }
 
-    public void checked() {
-        checked = true;
+    public void mineConfirmed() {
+        isMine = true;
     }
 
-    public boolean isChecked() {
-        return checked;
+    public boolean isAMine() {
+        return isMine;
+    }
+
+    public void cleared() {
+        isAccountedFor = true;
+    }
+
+    public boolean isClear() {
+        flagcheck();
+        return unaccountedBoxes == 0 && status != -1;
     }
 }

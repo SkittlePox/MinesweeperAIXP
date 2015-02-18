@@ -57,6 +57,8 @@ public class MinesweeperAIXP {
         guess();
         analyze(false);
         printStatus();
+        ai.flagMines();
+        ai.clearNums();
         while (prompt) {
             takeCommand();
         }
@@ -158,6 +160,12 @@ public class MinesweeperAIXP {
             case "print":
                 printStatus();
                 break;
+            case "flag":
+                ai.flagMines();
+                break;
+            case "clear":
+                ai.clearNums();
+                break;
         }
     }
 
@@ -190,10 +198,11 @@ public class MinesweeperAIXP {
                 } else if (boxes[c][d].getChancePerBox() > 0) {
                     int i = (int) boxes[c][d].getChancePerBox();
                     System.out.print("[ " + i + "]");
-                } else if(boxes[c][d].getStatus() != -1){
+                } else if (boxes[c][d].getStatus() != -1) {
                     System.out.print("[   ]");
+                } else {
+                    System.out.print("[" + boxes[c][d].getChancePerBox() + "]");
                 }
-                else System.out.print("["+ boxes[c][d].getChancePerBox()+"]");
             }
             System.out.println();
         }
@@ -208,10 +217,37 @@ public class MinesweeperAIXP {
                 } else if (boxes[c][d].getChance() > 0) {
                     int i = (int) boxes[c][d].getChance();
                     System.out.print("[ " + i + "]");
-                } else if(boxes[c][d].getStatus() != -1){
+                } else if (boxes[c][d].getStatus() != -1) {
                     System.out.print("[   ]");
+                } else {
+                    System.out.print("[" + boxes[c][d].getChance() + "]");
                 }
-                else System.out.print("["+ boxes[c][d].getChance()+"]");
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+        System.out.println("Confirmed Mines");
+        for (int d = 0; d < rowsX; d++) {
+            for (int c = 0; c < columnsY; c++) {
+                if (boxes[c][d].isAMine()) {
+                    System.out.print("[M]");
+                } else {
+                    System.out.print("[ ]");
+                }
+            }
+            System.out.println();
+        }
+        
+        System.out.println();
+        System.out.println("Cleared Boxes");
+        for (int d = 0; d < rowsX; d++) {
+            for (int c = 0; c < columnsY; c++) {
+                if (boxes[c][d].isClear()) {
+                    System.out.print("[C]");
+                } else {
+                    System.out.print("[ ]");
+                }
             }
             System.out.println();
         }
@@ -248,7 +284,7 @@ public class MinesweeperAIXP {
         int r = rand.nextInt(rowsX);    //Gets random x
         int c = rand.nextInt(columnsY); //Gets random y
         System.out.println(r + " " + c + " Was guessed");
-        if (boxes[r][c].getStatus() == -1) {    //If the box is unchecked
+        if (boxes[r][c].getStatus() == -1 && boxes[r][c].getChance() == 0) {    //If the box is unchecked
             moveToBox(r, c);
             mouse.leftClick();
             if (!bombCheck(boxes[r][c])) {
@@ -324,6 +360,7 @@ public class MinesweeperAIXP {
                             red = (color >> 16) & 0xFF;   // shift right by 16 bits, then mask first 8 bits
                             if (isSameColor(red, green, blue, red255, 0, 0, 0)) {
                                 boxes[x][y].setStatus(9);
+                                boxes[x][y].setChance(0);
                             }
                         }
                     } else if (isSameColor(red, green, blue, 0, 0, blue255, 0)) {   //Tests for blue255
