@@ -130,15 +130,6 @@ public class MinesweeperAIXP {
             e.printStackTrace();
         }
         pause(1);
-        if (ScreenHeight == 1080) { //Changes the amount of screen to crop out for the search
-            heightCrop = 700;
-            widthCrop = 1600;
-            System.out.println("\nAdjusting screen crop size to 320 x 380");
-        } else if (ScreenHeight == 768) {   //Changes the amount of screen to crop out for the search
-            heightCrop = 400;
-            widthCrop = 1000;
-            System.out.println("\nAdjusting screen crop size to 366 x 368");
-        }
     }
 
     public static BufferedImage takeScreenShot() {  //Takes a screeenshot
@@ -189,6 +180,33 @@ public class MinesweeperAIXP {
                 }
             }
         }
+        System.out.println();
+        System.out.println("Chance Per Box");
+        for (int d = 0; d < rowsX; d++) {
+            for (int c = 0; c < columnsY; c++) {
+                if (boxes[c][d].getChancePerBox() >= 100) {
+                    int i = (int) boxes[c][d].getChancePerBox();
+                    System.out.print("[" + i + "]");
+                }
+                else if (boxes[c][d].getChancePerBox() > 0) {
+                    int i = (int) boxes[c][d].getChancePerBox();
+                    System.out.print("[ " + i + "]");
+                } else {
+                    System.out.print("[" + boxes[c][d].getChancePerBox() + "]");
+                }
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+        System.out.println("Chance");
+        for (int d = 0; d < rowsX; d++) {
+            for (int c = 0; c < columnsY; c++) {
+                System.out.print("[" + boxes[c][d].getChance() + "]");
+            }
+            System.out.println();
+        }
+
         System.out.println();
         for (int d = 0; d < rowsX + 1; d++) {
             System.out.print("---");
