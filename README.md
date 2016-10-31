@@ -1,5 +1,5 @@
 # Piranha
-A Windows XP Minesweeper AI
+A Windows XP Minesweeper Bot
 
 <!---------------------------------------------------------------------------------
 | PPPPPPP  IIIII   RRRRRRR          A        NN      N   H       H        A       |
